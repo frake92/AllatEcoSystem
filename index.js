@@ -161,14 +161,14 @@ document.addEventListener("DOMContentLoaded", function() {
     ];
     const elephantBig = ['Sprites/Animals/Elephant.png']
 
-    const treeEntities = spawnEntities(8, tree, 350, 450);
-    const bushEntities = spawnEntities(5, bush, 120, 140);
-    const grassEntities = spawnEntities(20, grass, 30, 30);
-    const carrotEntities = spawnEntities(5, carrot, 60, 60);
-    const smallAnimalEntities = spawnEntities(5, smallAnimalSprites, 120, 80, true);
-    const animalEntities = spawnEntities(4, animalSprites, 270, 150, true);
-    const elephantEntities = spawnEntities(2, elephantBig, 400, 300, true);
-    const dogNwolfEntities = spawnEntities(4, Doggoandetc, 200, 120, true);
+    const treeEntities = spawnEntities(0, tree, 350, 450);
+    const bushEntities = spawnEntities(0, bush, 120, 140);
+    const grassEntities = spawnEntities(0, grass, 30, 30);
+    const carrotEntities = spawnEntities(0, carrot, 60, 60);
+    const smallAnimalEntities = spawnEntities(0, smallAnimalSprites, 120, 80, true);
+    const animalEntities = spawnEntities(10, animalSprites, 270, 150, true);
+    const elephantEntities = spawnEntities(10, elephantBig, 400, 300, true);
+    const dogNwolfEntities = spawnEntities(0, Doggoandetc, 200, 120, true);
     const allEntities = [...treeEntities, ...carrotEntities, ...grassEntities, ...animalEntities, ...smallAnimalEntities, ...bushEntities, ...elephantEntities, ...dogNwolfEntities];
 
     console.log(`Total entities created: ${allEntities.length}`);
@@ -205,11 +205,47 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 */
+function isEatable(entity, otherEntity) {
+    const overlapArea = getOverlapArea(entity, otherEntity);
+    if (overlapArea > 0) {
+        if (entity instanceof Elephant && (otherEntity instanceof Bush || otherEntity instanceof Tree)) {
+            entity.eating(otherEntity);
+            removeEntity(otherEntity); 
+            return true;
+        } else if (entity instanceof Deer && (otherEntity instanceof Bush || otherEntity instanceof Grass)) {
+            entity.eating(otherEntity); 
+            removeEntity(otherEntity); 
+            return true;
+        } else if (entity instanceof Lion && otherEntity instanceof HerbEater)
+            {
+            entity.eating(otherEntity); 
+            removeEntity(otherEntity); 
+            return true;
+        }
+
+        return false;
+    }
+    return false;
+}
+
+function removeEntity(entity) {
+    if(isEatable())
+        {
+            const index = allEntities.indexOf(entity);
+            if (index !== -1) {
+                allEntities.splice(index, 1);
+            }
+        }
+    
+}
+
+
     function animate() {
         allEntities.forEach(entity => entity.update());
         drawEntities(allEntities);
         requestAnimationFrame(animate);
         deleteDeadEntities(allEntities);
+
     }
 
     animate();  // Start the animation
