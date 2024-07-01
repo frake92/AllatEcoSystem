@@ -194,11 +194,21 @@ document.addEventListener("DOMContentLoaded", function() {
             entity.draw();
         });
     }
+    function deleteDeadEntities(entities)
+    {
+        for (let i = 0; i < entities.length; i++) {
+            if(entities[i].isDead())
+            {
+                entities.splice(i, 1);
+            }
+        }
+    }
 
     function animate() {
         allEntities.forEach(entity => entity.update());
         drawEntities(allEntities);
         requestAnimationFrame(animate);
+        deleteDeadEntities(allEntities);
     }
 
     animate();  // Start the animation
