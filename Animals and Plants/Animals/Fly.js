@@ -10,6 +10,7 @@ class Fly extends HerbEater {
     }
     eaten() {
         console.log('The fly was eaten');
+        isDead = true;
     }
 
 }

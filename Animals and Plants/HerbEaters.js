@@ -9,11 +9,18 @@ class HerbEater extends Creature {
     }
 
     eating() {
-        console.log(`${this.name} Éppen eszik egy kis ${this.food}`);
+        if (this.food.includes(food)) {
+            console.log(`${this.name} eats ${food}`);
+        }
     }
 
     moving() {
-        console.log(`${this.name} Mozgásban van`);
+        if (!this.isDead) {
+            console.log(`${this.name} is moving`);
+        }
+        else {
+            console.log(`${this.name} is not moving`);
+        }
     }
 
     isDead() {

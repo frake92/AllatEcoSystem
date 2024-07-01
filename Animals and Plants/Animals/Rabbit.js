@@ -8,17 +8,13 @@ class Rabbit extends HerbEater {
         this.food = ["carrot", "grass"];
     }
     eating(food) {
-        if (food instanceof Carrot || food instanceof Grass) {
-            console.log(`${this.name} is eating some ${this.food}`);
-        }
-        else {
-            console.log(`${this.name} is not eating ${food.name}`);
-        }
+        super(food);
     }
     moving() {
         console.log(`${this.name} is moving`);
     }
     eaten() {
         console.log('The rabbit was eaten');
+        isDead = true;
     }
 }
