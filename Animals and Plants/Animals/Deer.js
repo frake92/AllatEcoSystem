@@ -1,7 +1,7 @@
 import HerbEater from './HerbEater.js';
 import Grass from '../Plants/Grass.js';
 
-class Elephant extends HerbEater {
+class Deer extends HerbEater {
     constructor(name) {
         super(name);
         this.food = "plants" && "grass";
