@@ -1,4 +1,6 @@
 import HerbEater from './HerbEater.js';
+import { Plants } from '../Plants/Plants.js';
+import { Tree } from '../Plants/Tree.js';
 
 class Elephant extends HerbEater {
     constructor(name) {
