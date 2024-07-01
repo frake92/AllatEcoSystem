@@ -3,14 +3,15 @@ import Carnivores from '../Carnivores'
 class Cat extends Carnivores{
     constructor(name){
         super(name);
+        this.food.concat(["duck", "rabbit", "voles"]);
     }
     eating(){
-        console.log(`${this.name} is eating ${this.food}`);
+        super();
     }
     moving() {
-        console.log(`${this.name} is moving`);
+        super();
     }
     isDead(){
-        return false;
+        super();
     }
 }

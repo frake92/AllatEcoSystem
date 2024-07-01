@@ -4,7 +4,7 @@ import { HerbEater } from './HerbEater.js';
 class Lion extends Carnivore {
     constructor(name) {
         super(name);
-        this.food = "HerbEater";
+        this.food.concat(["cat", "deer", "dog", "duck", "elephant", "rabbit", "voles", "wolf"]);
     }
     eating(food) {
         if (food instanceof HerbEater) {
