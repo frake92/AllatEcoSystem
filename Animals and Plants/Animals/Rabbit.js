@@ -1,14 +1,18 @@
 import HerbEater from './HerbEater.js';
-import { Carrot, Grass } from '../Plants/Carrot.js';
+import Carrot from '../Plants/Carrot.js';
+import Grass from '../Plants/Grass.js';
 
 class Rabbit extends HerbEater {
     constructor(name) {
         super(name);
-        this.food = "carrot or grass";
+        this.food = ["carrot", "grass"];
     }
     eating(food) {
         if (food instanceof Carrot || food instanceof Grass) {
             console.log(`${this.name} is eating some ${this.food}`);
+        }
+        else {
+            console.log(`${this.name} is not eating ${food.name}`);
         }
     }
     moving() {

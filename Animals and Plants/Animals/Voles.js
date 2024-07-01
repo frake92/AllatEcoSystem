@@ -10,6 +10,9 @@ class Vole extends HerbEater {
         if (food instanceof Grass) {
             console.log(`${this.name} is eating some ${this.food}`);
         }
+        else {
+            console.log(`${this.name} is not eating ${food.name}`);
+        }
     }
     moving() {
         console.log(`${this.name} is moving`);
