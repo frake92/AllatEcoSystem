@@ -24,16 +24,16 @@
 #### Feladatok kiosztása
  Első mérföldkő részletei:
  Spriteok keresése
- 1. - Fű 
- 2. - Állatok - Réka, Jani
- 3. - Növények - Benji
+ 1. Fű 
+ 2. Állatok - Réka, Jani
+ 3. Növények - Benji
 
  Második mérföldkő részletei:
- 1. - Növényevők - Réka 
- 2. - Húsevők - Réka
- 3. - Növények - Jani
- 4. - Élőlények - Benji
- 5. - Specifikus állat osztályok
+ 1. Növényevők - Réka 
+ 2. Húsevők - Réka
+ 3. Növények - Jani
+ 4. Élőlények - Benji
+ 5. Specifikus állat osztályok
  Légy, kacsa, pocok, nyúl, macska, kutya, őz, farkas, oroszlán, elefánt
  Randomizálás futáshoz, és egyéb tevékenységekhez
 
