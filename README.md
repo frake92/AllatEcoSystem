@@ -29,12 +29,12 @@
  3. Növények - Benji
 
  Második mérföldkő részletei:
- 1. Növényevők - Réka 
- 2. Húsevők - Réka
- 3. Növények - Jani
- 4. Élőlények - Benji
+ 1. Növényevők - Barna (élőlények impl.)
+ 2. Húsevők - Réka (élőlények impl.)
+ 3. Növények - Jani (megéve metódus)
+ 4. Élőlények - Benji (evés, mozgás, halál metódus)
  5. Specifikus állat osztályok
- Légy, kacsa, pocok, nyúl, macska, kutya, őz, farkas, oroszlán, elefánt
+ Légy, kacsa | pocok, nyúl | macska, kutya | őz, farkas | oroszlán, elefánt |
  Randomizálás futáshoz, és egyéb tevékenységekhez
 
  Harmadik mérföldkő részletei:
