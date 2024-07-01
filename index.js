@@ -161,14 +161,14 @@ document.addEventListener("DOMContentLoaded", function() {
     ];
     const elephantBig = ['Sprites/Animals/Elephant.png']
 
-    const treeEntities = spawnEntities(0, tree, 350, 450);
-    const bushEntities = spawnEntities(0, bush, 120, 140);
-    const grassEntities = spawnEntities(0, grass, 30, 30);
-    const carrotEntities = spawnEntities(0, carrot, 60, 60);
-    const smallAnimalEntities = spawnEntities(0, smallAnimalSprites, 120, 80, true);
+    const treeEntities = spawnEntities(5, tree, 350, 450);
+    const bushEntities = spawnEntities(6, bush, 120, 140);
+    const grassEntities = spawnEntities(20, grass, 30, 30);
+    const carrotEntities = spawnEntities(5, carrot, 60, 60);
+    const smallAnimalEntities = spawnEntities(4, smallAnimalSprites, 120, 80, true);
     const animalEntities = spawnEntities(10, animalSprites, 270, 150, true);
-    const elephantEntities = spawnEntities(10, elephantBig, 400, 300, true);
-    const dogNwolfEntities = spawnEntities(0, Doggoandetc, 200, 120, true);
+    const elephantEntities = spawnEntities(5, elephantBig, 400, 300, true);
+    const dogNwolfEntities = spawnEntities(3, Doggoandetc, 200, 120, true);
     const allEntities = [...treeEntities, ...carrotEntities, ...grassEntities, ...animalEntities, ...smallAnimalEntities, ...bushEntities, ...elephantEntities, ...dogNwolfEntities];
 
     console.log(`Total entities created: ${allEntities.length}`);
