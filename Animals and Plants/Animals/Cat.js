@@ -5,8 +5,8 @@ class Cat extends Carnivores{
         super(name);
         this.food.concat(["duck", "rabbit", "voles"]);
     }
-    eating(){
-        super();
+    eating(food){
+        super(food);
     }
     moving() {
         super();
