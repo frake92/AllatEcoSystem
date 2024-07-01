@@ -13,15 +13,16 @@
  Az állatok, ha eg bizonyos távolságra vannak egymástól, akkor a táplálékláncon feljebb levő állat megeheti(random eséllyel) a kisebb állatot. A növény evőknek lehetőségük van a pályán legenerált növényeket megenni, feltéve ha éhesek. Az állatoknak van éhségük, mely fél percenként csökken, ha egy bizonyos szintet elér az éhségük éhen halnak. Az állatok húsa ott marad, hogy a húsevők tudjanak mit fogyasztani. 
 
 #### Mérföldkövek
- 1. Főtér kialakítása és mozgások implementálása
+ 1. Főtér kialakítása
  2. Állat és növény osztályok létrehozása
- 3. Tápláléklánc törvényeinek implementálása
- 4. Evés mechanizmusának implementálása a tápláléklénc alapján
- 5. Éhség implementálása
+ 3. Mozgások implementálása
+ 4. Tápláléklánc törvényeinek implementálása
+ 5. Evés mechanizmusának implementálása a tápláléklénc alapján
+ 6. Éhség implementálása
 
 
 #### Feladatok kiosztása
- Első Mérföldkő részletei:
+ Első mérföldkő részletei:
  Spriteok keresése
  1. - Fű 
  2. - Állatok - Réka, Jani
@@ -34,6 +35,27 @@
  4. - Élőlények - Benji
  5. - Specifikus állat osztályok
  Légy, kacsa, pocok, nyúl, macska, kutya, őz, farkas, oroszlán, elefánt
+ Randomizálás futáshoz, és egyéb tevékenységekhez
+
+ Harmadik mérföldkő részletei:
+ 1. Alap mozgás implementálása és bereferenciálása
+ 2. Spriteok megfelelő mozgatásáért felelős metódusok megírása
+ 3. CSS
+
+ Negyedik mérföldkő részletei:
+ 1. Törvények meghatározása
+ 2. Implementálás külön fájlokba:
+ Növényevők törvényei, húsevők törvényei.
+
+ Ötödik mérföldkő részletei:
+ 1. Evés metódusok implementálása a különböző fajoknak
+ 2. törvények használata
+
+ Hatodik mérföldkő részletei:
+ 1. Minden osztály külön éhségi szintjének meghatározás
+ 2. Hunger System implementálása
+
+ 
 
 
 
