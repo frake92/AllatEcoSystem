@@ -5,8 +5,8 @@ class Wolf extends Carnivores{
         super(name);
         this.food.concat(["duck", "rabbit", "voles", "deer", "dog", "cat"]);
     }
-    eating(){
-        super();
+    eating(food){
+        super(food);
     }
     moving() {
         super();

@@ -5,8 +5,8 @@ class Dog extends Carnivores{
         super(name);
         this.food.concat(["deer", "duck", "rabbit", "voles", "cat"])
     }
-    eating(){
-        console.log(`${this.name} is eating ${this.food}`);
+    eating(food){
+        super(food)
     }
     moving() {
         console.log(`${this.name} is moving`);
