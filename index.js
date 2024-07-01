@@ -124,8 +124,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function spawnEntities(entityCount, spritePaths, defaultWidth, defaultHeight, isAnimal = false) {
         const entities = [];
-        const actualCount = Math.min(entityCount, getRandomInt(entityCount, entityCount * 2));
-        for (let i = 0; i < actualCount; i++) {
+        for (let i = 0; i < entityCount; i++) {
             const x = getRandomInt(0, canvas.width - defaultWidth);
             const y = getRandomInt(0, canvas.height - defaultHeight);
             const sprite = spritePaths[getRandomInt(0, spritePaths.length)];
@@ -148,7 +147,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const smallAnimalSprites = [
         'Sprites/Animals/Fly.png',
-        'Sprites/Animals/Duck.png',
         'Sprites/Animals/Rabbit.png',
         'Sprites/Animals/Cat.png',
         'Sprites/Animals/Voles.png'
@@ -165,7 +163,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const treeEntities = spawnEntities(5, tree, 350, 450);
     const bushEntities = spawnEntities(5, bush, 120, 140);
-    const grassEntities = spawnEntities(15, grass, 30, 30);
+    const grassEntities = spawnEntities(0, grass, 30, 30);
     const carrotEntities = spawnEntities(15, carrot, 60, 60);
     const smallAnimalEntities = spawnEntities(5, smallAnimalSprites, 120, 80, true);
     const animalEntities = spawnEntities(4, animalSprites, 270, 150, true);
@@ -181,54 +179,19 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function drawEntities(entities) {
         clearCanvas();
-      
+
         // Group entities by size category
         const smallEntities = entities.filter(entity => entity.width < 150 && entity.height < 100);
         const mediumEntities = entities.filter(entity => entity.width >= 150 && entity.width < 300 && entity.height >= 100 && entity.height < 200);
         const largeEntities = entities.filter(entity => entity.width >= 300 || entity.height >= 200);
-      
+
         // Sort within each size group based on depth
-        smallEntities.sort((a, b) => a.getY2() - b.getY2());
-        mediumEntities.sort((a, b) => a.getY2() - b.getY2());
-        largeEntities.sort((a, b) => a.getY2() - b.getY2());
-      
-        // Draw large entities first
-        largeEntities.forEach(entity => entity.draw());
-      
-        // Draw medium entities, checking for overlap with large entities
-        mediumEntities.forEach(entity => {
-          let overlaps = false;
-          largeEntities.forEach(largeEntity => {
-            if (isOverlap(entity, largeEntity)) {
-              overlaps = true;
-              return;  // Exit loop if overlap found
-            }
-          });
-          if (!overlaps) {
+        const sortedEntities = [...largeEntities, ...mediumEntities, ...smallEntities];
+        sortedEntities.sort((a, b) => a.getY2() - b.getY2());
+
+        // Draw entities in sorted order
+        sortedEntities.forEach(entity => {
             entity.draw();
-          }
-        });
-      
-        // Draw small entities, checking for overlap with large and medium entities
-        smallEntities.forEach(entity => {
-          let overlaps = false;
-          largeEntities.forEach(largeEntity => {
-            if (isOverlap(entity, largeEntity)) {
-              overlaps = true;
-              return;
-            }
-          });
-          if (!overlaps) {
-            mediumEntities.forEach(mediumEntity => {
-              if (isOverlap(entity, mediumEntity)) {
-                overlaps = true;
-                return;
-              }
-            });
-          }
-          if (!overlaps) {
-            entity.draw();
-          }
         });
     }
 
