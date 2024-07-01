@@ -181,7 +181,7 @@ document.addEventListener("DOMContentLoaded", function() {
         clearCanvas();
 
         // Group entities by size category
-        const smallEntities = entities.filter(entity => entity.width < 150 && entity.height < 100);
+        const smallEntities = entities.filter(entity => entity.width < 121 && entity.height < 141);
         const mediumEntities = entities.filter(entity => entity.width >= 150 && entity.width < 300 && entity.height >= 100 && entity.height < 200);
         const largeEntities = entities.filter(entity => entity.width >= 300 || entity.height >= 200);
 
@@ -194,6 +194,7 @@ document.addEventListener("DOMContentLoaded", function() {
             entity.draw();
         });
     }
+    /*
     function deleteDeadEntities(entities)
     {
         for (let i = 0; i < entities.length; i++) {
@@ -203,7 +204,7 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
     }
-
+*/
     function animate() {
         allEntities.forEach(entity => entity.update());
         drawEntities(allEntities);
