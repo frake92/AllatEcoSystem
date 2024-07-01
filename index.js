@@ -4,15 +4,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function setupCanvas() {
         const devicePixelRatio = window.devicePixelRatio || 1;
-        canvas.width = window.innerWidth * devicePixelRatio;
-        canvas.height = window.innerHeight * devicePixelRatio;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
         canvas.style.width = `${window.innerWidth}px`;
         canvas.style.height = `${window.innerHeight}px`;
         ctx.scale(devicePixelRatio, devicePixelRatio);
-        ctx.imageSmoothingEnabled = true; 
+        ctx.imageSmoothingEnabled = true;
     }
-    
+
     setupCanvas();
+
     class Entity {
         constructor(x, y, sprite, width, height) {
             this.x = x;
@@ -24,60 +25,82 @@ document.addEventListener("DOMContentLoaded", function() {
             this.sprite.onload = () => {
                 this.draw();
             };
+            this.sprite.onerror = () => {
+                console.error(`Failed to load image: ${sprite}`);
+            };
         }
 
         draw() {
-            this.sprite.onload = () => {
-                ctx.drawImage(this.sprite, this.x, this.y, this.width, this.height);
-            };
+            ctx.drawImage(this.sprite, this.x, this.y, this.width, this.height);
         }
     }
 
-    // Example entity
-    const exampleEntity = new Entity(1, 1, 'Sprites/Plants/Bush.png', 30, 30);
-    const exampleEntity2 = new Entity(30, 3, 'Sprites/Plants/Tree.png', 30, 30);
-    exampleEntity.draw();
-    exampleEntity2.draw();
-
-    /*
     function getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min)) + min;
     }
 
-    function spawnEntities(entityCount, spritePaths) {
+    function spawnEntities(entityCount, spritePaths, defaultWidth, defaultHeight) {
         const entities = [];
         for (let i = 0; i < entityCount; i++) {
-            const x = getRandomInt(0, canvas.width);
-            const y = getRandomInt(0, canvas.height);
+            // Ensure entities fit within the canvas
+            const x = getRandomInt(0, canvas.width - defaultWidth);
+            const y = getRandomInt(0, canvas.height - defaultHeight);
             const sprite = spritePaths[getRandomInt(0, spritePaths.length)];
-            const entity = new Entity(x, y, sprite);
-            entity.draw();
+            const entity = new Entity(x, y, sprite, defaultWidth, defaultHeight);
             entities.push(entity);
         }
         return entities;
     }
 
-    const plantSprites = [
-        'Sprites/Plants/Bush.png',
-        'Sprites/Plants/Eatable_grass.png',
-        'Sprites/Plants/Tree.png',
-        'Sprites/Plants/Carrot.png'
-    ];
+    function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
 
-    const animalSprites = [
+    function drawEntities(entities) {
+        clearCanvas();
+        entities.forEach(entity => {
+            // Ensure the image is loaded before drawing
+            if (entity.sprite.complete) {
+                entity.draw();
+            } else {
+                entity.sprite.onload = () => entity.draw();
+            }
+        });
+    }
+
+    const tree = [
+        'Sprites/Plants/Tree.png',
+    ];
+    const grass = [
+        'Sprites/Plants/Eatable_grass.png',
+    ];
+    const bush = ['Sprites/Plants/Bush.png',];
+    const carrot = ['Sprites/Plants/Carrot.png'];
+
+    const smallAnimalSprites = [
         'Sprites/Animals/Fly.png',
         'Sprites/Animals/Duck.png',
         'Sprites/Animals/Rabbit.png',
         'Sprites/Animals/Cat.png',
         'Sprites/Animals/Dog.png',
-        'Sprites/Animals/Deer.png',
         'Sprites/Animals/Wolf.png',
-        'Sprites/Animals/Lion.png',
-        'Sprites/Animals/Elephant.png',
         'Sprites/Animals/Voles.png'
     ];
+    const animalSprites = [
 
-    const plantEntities = spawnEntities(10, plantSprites);
-    const animalEntities = spawnEntities(5, animalSprites);*/
+        'Sprites/Animals/Deer.png',
+        'Sprites/Animals/Lion.png'
+    ];
+    const elephantBig = ['Sprites/Animals/Elephant.png']
+
+    const treeEntities = spawnEntities(1, tree, 300, 400); //okés
+    const bushEntities = spawnEntities(1, bush, 100, 120); 
+    const grassEntities = spawnEntities(1, grass, 150, 100); 
+    const carrotEntities = spawnEntities(1, carrot, 100, 50); 
+    const animalEntities = spawnEntities(1, smallAnimalSprites, 100, 50); 
+    const smallAnimalEntities = spawnEntities(1, animalSprites, 100, 50); 
+    const elephantEntities = spawnEntities(1, elephantBig, 100, 50); 
+    const allEntities = [...treeEntities, ...carrotEntities, ...grassEntities, ...animalEntities, ...smallAnimalEntities, ...bushEntities, ...elephantEntities];
+
+    drawEntities(allEntities);
 });
-
