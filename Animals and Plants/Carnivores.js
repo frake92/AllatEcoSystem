@@ -8,7 +8,7 @@ class Carnivores extends Creatures {
         this.food = ["meat"];
     }
     eating(food) {
-        if(this.food.find(food)){
+        if(this.food.includes(food)){
             console.log(`${this.name} eats ${food}`);
         }
     }
