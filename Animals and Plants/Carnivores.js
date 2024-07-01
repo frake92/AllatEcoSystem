@@ -4,7 +4,7 @@ class Carnivores extends Creatures {
     constructor(name) {
         super();
         this.name = name;
-        this.food = "meat";
+        this.food = ["meat"];
     }
     eating() {
         console.log(`${this.name} is eating some ${this.food}`);

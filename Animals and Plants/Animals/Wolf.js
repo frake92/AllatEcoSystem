@@ -1,9 +1,9 @@
 import Carnivores from '../Carnivores'
 
-class Cat extends Carnivores{
+class Wolf extends Carnivores{
     constructor(name){
         super(name);
-        this.food.concat(["duck", "rabbit", "voles"]);
+        this.food.concat(["duck", "rabbit", "voles", "deer", "dog", "cat"]);
     }
     eating(){
         super();

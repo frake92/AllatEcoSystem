@@ -5,7 +5,7 @@ class HerbEater extends Creature {
     constructor(name) {
         super();
         this.name = name;
-        this.food = "plants"; 
+        this.food = ["plants"];
     }
 
     eating() {
