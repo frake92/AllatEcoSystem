@@ -1,9 +1,10 @@
 import HerbEater from './HerbEater.js';
+import { Carrot, Grass } from '../Plants/Carrot.js';
 
 class Rabbit extends HerbEater {
     constructor(name) {
         super(name);
-        this.food = "carrot" && "grass";
+        this.food = "carrot or grass";
     }
     eating(food) {
         if (food instanceof Carrot || food instanceof Grass) {

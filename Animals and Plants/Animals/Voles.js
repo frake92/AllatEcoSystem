@@ -1,4 +1,5 @@
 import HerbEater from './HerbEater.js';
+import Grass from '../Plants/Grass.js';
 
 class Vole extends HerbEater {
     constructor(name) {
