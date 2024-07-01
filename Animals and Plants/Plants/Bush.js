@@ -1,5 +1,6 @@
 class Bush extends Plants {
     constructor(type) {
+        type = "bush";
         super(type);
     }
     eaten() {
