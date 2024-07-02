@@ -166,7 +166,7 @@ document.addEventListener("DOMContentLoaded", function() {
     
     class Cat extends Carnivores{
         constructor(x, y, speedX, speedY){
-            super(x,y,'../../Sprites/Animals/Cat.png',100,60,speedX,speedY);
+            super(x,y,'Sprites/Animals/Cat.png',100,60,speedX,speedY);
             this.food=["duck", "rabbit", "voles"];
         }
     }
