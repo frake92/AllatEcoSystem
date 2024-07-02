@@ -15,114 +15,144 @@ document.addEventListener("DOMContentLoaded", function() {
     setupCanvas(); 
 
     // Entity class with updated interaction logic
-class Entity {
-    constructor(x, y, sprite, width, height, speedX = 0, speedY = 0, isHerbivore = false, isCarnivore = false) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.sprite = new Image();
-        this.sprite.src = sprite;
-        this.sprite.onload = () => {
-            this.draw();
-        };
-        this.sprite.onerror = () => {
-            console.error(`Failed to load image: ${sprite}`);
-        };
-        this.speedX = speedX;
-        this.speedY = speedY;
-        this.moving = false;
-        this.movementInterval = this.randomMovementInterval();
-        this.lastMovementTime = Date.now();
-        this.directionChangeInterval = this.randomDirectionChangeInterval();
-        this.lastDirectionChange = Date.now();
-        this.direction = { x: 0, y: 0 };
-        this.isHerbivore = isHerbivore;
-        this.isCarnivore = isCarnivore;
-    }
-
-    randomMovementInterval() {
-        return Math.floor(Math.random() * (5000 - 1000)) + 1000; // Random interval between 1 and 5 seconds
-    }
-
-    randomDirectionChangeInterval() {
-        return Math.floor(Math.random() * (3000 - 1000)) + 1000; // Random interval between 1 and 3 seconds
-    }
-
-    getY2() {
-        return this.y + this.height + 1;
-    }
-
-    draw() {
-        ctx.drawImage(this.sprite, this.x, this.y, this.width, this.height);
-    }
-
-    update() {
-        const now = Date.now();
-    
-        if (this.moving) {
-            this.x += this.speedX * this.direction.x;
-            this.y += this.speedY * this.direction.y;
-    
-            // Handle horizontal boundaries
-            if (this.x < 0) {
-                this.x = 0;
-                this.direction.x = -this.direction.x;
-            } else if (this.x + this.width > canvas.width) {
-                this.x = canvas.width - this.width;
-                this.direction.x = -this.direction.x;
-            }
-    
-            // Handle vertical boundaries
-            if (this.y < 0) {
-                this.y = 0;
-                this.direction.y = -this.direction.y;
-            } else if (this.y + this.height > canvas.height) {
-                this.y = canvas.height - this.height;
-                this.direction.y = -this.direction.y;
-            }
-        }
-    
-        // Change movement status based on interval
-        if (now - this.lastMovementTime > this.movementInterval) {
-            this.moving = !this.moving;
-            this.lastMovementTime = now;
+    class Entity {
+        constructor(x, y, sprite, width, height, speedX = 0, speedY = 0, isHerbivore = false, isCarnivore = false) {
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            this.sprite = new Image();
+            this.sprite.src = sprite;
+            this.sprite.onload = () => {
+                this.draw();
+            };
+            this.sprite.onerror = () => {
+                console.error(`Failed to load image: ${sprite}`);
+            };
+            this.speedX = speedX;
+            this.speedY = speedY;
+            this.moving = false;
             this.movementInterval = this.randomMovementInterval();
-            this.direction = { 
-                x: getRandomInt(-1, 2), // Direction can be -1, 0, or 1
-                y: getRandomInt(-1, 2)  // Direction can be -1, 0, or 1
-            };
-        }
-    
-        // Change direction based on direction change interval
-        if (now - this.lastDirectionChange > this.directionChangeInterval) {
-            this.direction = { 
-                x: getRandomInt(-1, 2), 
-                y: getRandomInt(-1, 2)  
-            };
-            this.lastDirectionChange = now;
+            this.lastMovementTime = Date.now();
             this.directionChangeInterval = this.randomDirectionChangeInterval();
+            this.lastDirectionChange = Date.now();
+            this.direction = { x: 0, y: 0 };
+            this.isHerbivore = isHerbivore;
+            this.isCarnivore = isCarnivore;
+            this.lastInteractionTime = Date.now(); // Initialize last interaction time
         }
     
-        if (this.isCarnivore) {
-            // Handle carnivore behavior
-            allEntities.forEach(entity => {
-                if (this !== entity && entity.isHerbivore && isOverlap(this, entity)) {
-                    // Carnivore eats herbivore
-                    allEntities.splice(allEntities.indexOf(entity), 1);
+        randomMovementInterval() {
+            return Math.floor(Math.random() * (5000 - 1000)) + 1000; // Random interval between 1 and 5 seconds
+        }
+    
+        randomDirectionChangeInterval() {
+            return Math.floor(Math.random() * (3000 - 1000)) + 1000; // Random interval between 1 and 3 seconds
+        }
+    
+        getY2() {
+            return this.y + this.height + 1;
+        }
+    
+        draw() {
+            ctx.drawImage(this.sprite, this.x, this.y, this.width, this.height);
+        }
+    
+        update() {
+            const now = Date.now();
+    
+            if (this.moving) {
+                this.x += this.speedX * this.direction.x;
+                this.y += this.speedY * this.direction.y;
+    
+                // Handle horizontal boundaries
+                if (this.x < 0) {
+                    this.x = 0;
+                    this.direction.x = -this.direction.x;
+                } else if (this.x + this.width > canvas.width) {
+                    this.x = canvas.width - this.width;
+                    this.direction.x = -this.direction.x;
                 }
-            });
-        } else if (this.isHerbivore) {
-            // Handle herbivore behavior
-            allEntities.forEach(entity => {
-                if (this !== entity && !entity.isHerbivore && !entity.isCarnivore && isOverlap(this, entity)) {
-                    // Herbivore consumes plant
-                    allEntities.splice(allEntities.indexOf(entity), 1);
+    
+                // Handle vertical boundaries
+                if (this.y < 0) {
+                    this.y = 0;
+                    this.direction.y = -this.direction.y;
+                } else if (this.y + this.height > canvas.height) {
+                    this.y = canvas.height - this.height;
+                    this.direction.y = -this.direction.y;
                 }
-            });
+            }
+    
+            // Change movement status based on interval
+            if (now - this.lastMovementTime > this.movementInterval) {
+                this.moving = !this.moving;
+                this.lastMovementTime = now;
+                this.movementInterval = this.randomMovementInterval();
+                this.direction = {
+                    x: getRandomInt(-1, 2), // Direction can be -1, 0, or 1
+                    y: getRandomInt(-1, 2) // Direction can be -1, 0, or 1
+                };
+            }
+    
+            // Change direction based on direction change interval
+            if (now - this.lastDirectionChange > this.directionChangeInterval) {
+                this.direction = {
+                    x: getRandomInt(-1, 2),
+                    y: getRandomInt(-1, 2)
+                };
+                this.lastDirectionChange = now;
+                this.directionChangeInterval = this.randomDirectionChangeInterval();
+            }
+    
+            // Handle interactions (eating)
+            if (this.isCarnivore) {
+                allEntities.forEach(entity => {
+                    if (this !== entity && entity.isHerbivore && isOverlap(this, entity)) {
+                        // Carnivore eats herbivore
+                        allEntities.splice(allEntities.indexOf(entity), 1);
+                        this.lastInteractionTime = now; // Update last interaction time
+                    }
+                });
+            } else if (this.isHerbivore) {
+                allEntities.forEach(entity => {
+                    if (this !== entity && !entity.isHerbivore && !entity.isCarnivore && isOverlap(this, entity)) {
+                        // Herbivore consumes plant
+                        allEntities.splice(allEntities.indexOf(entity), 1);
+                        this.lastInteractionTime = now; // Update last interaction time
+                    }
+                });
+            }
+    
+            // Check starvation only for herbivores and carnivores
+            if (this.isHerbivore || this.isCarnivore) {
+                this.checkStarvation(now);
+            }
+        }
+    
+        checkStarvation(now) {
+            const starvationTimeLimit = 25000; // 5 seconds in milliseconds
+    
+            if (now - this.lastInteractionTime > starvationTimeLimit) {
+                // Entity has starved
+                console.log(`Entity has starved: ${this}`);
+                // Perform actions like removing the entity from the simulation
+                allEntities.splice(allEntities.indexOf(this), 1);
+            }
         }
     }
-}    
+    
+    // Helper function to get random integer
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min)) + min;
+    }
+    
+    
+    // Helper function to get random integer
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min)) + min;
+    }
+    
 
 
     function getRandomInt(min, max) {
