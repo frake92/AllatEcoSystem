@@ -8,11 +8,28 @@
     <title>Ecosystem</title>
 </head>
 <body>
-    <canvas id="ecosystemCanvas"></canvas>
-    <div id="backlog">
-        <h3>History: </h3>
-        <ul id="log"></ul>
-    </div>
-    <script src="index.js"></script>
+<canvas id="ecosystemCanvas"></canvas>
+<div id="backlog">
+    <h3>History: </h3>
+    <ul id="log"></ul>
+</div>
+<div id="statistics">
+    <h3>Statistics: </h3>
+    <table>
+        <tr>
+            <th>Állatok típusa</th>
+            <th>Számuk</th>
+        </tr>
+        <tr>
+            <td>Növényevők</td>
+            <td id="herbivoreCount">0</td>
+        </tr>
+        <tr>
+            <td>Ragadozók</td>
+            <td id="carnivoreCount">0</td>
+        </tr>
+    </table>
+</div>
+<script src="index.js"></script>
 </body>
 </html>

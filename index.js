@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
         ctx.imageSmoothingEnabled = true;
     }
 
-    setupCanvas(); 
+    setupCanvas();
 
     // Function to log events
     function logEvent(event) {
@@ -22,8 +22,17 @@ document.addEventListener("DOMContentLoaded", function() {
         logElement.appendChild(newLogEntry);
     }
 
+    // Function to update statistics
+    function updateStatistics() {
+        const herbivoreCount = allEntities.filter(entity => entity.isHerbivore).length;
+        const carnivoreCount = allEntities.filter(entity => entity.isCarnivore).length;
+
+        document.getElementById('herbivoreCount').textContent = herbivoreCount;
+        document.getElementById('carnivoreCount').textContent = carnivoreCount;
+    }
+
     class Entity {
-        constructor(name, x, y, sprite, width, height, speedX = 0, speedY = 0, isHerbivore = false, isCarnivore = false) {
+        constructor(name, x, y, sprite, width, height, speedX = 0, speedY = 0, isHerbivore = false, isCarnivore = false, plantType = null, allowedPlantTypes = []) {
             this.name = name;
             this.x = x;
             this.y = y;
@@ -47,6 +56,8 @@ document.addEventListener("DOMContentLoaded", function() {
             this.direction = { x: 0, y: 0 };
             this.isHerbivore = isHerbivore;
             this.isCarnivore = isCarnivore;
+            this.plantType = plantType; // Add plantType property
+            this.allowedPlantTypes = allowedPlantTypes; // Add allowedPlantTypes property
         }
 
         randomMovementInterval() {
@@ -67,11 +78,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
         update() {
             const now = Date.now();
-        
+
             if (this.moving) {
                 this.x += this.speedX * this.direction.x;
                 this.y += this.speedY * this.direction.y;
-        
+
                 // Handle horizontal boundaries
                 if (this.x < 0) {
                     this.x = 0;
@@ -80,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     this.x = canvas.width - this.width;
                     this.direction.x = -this.direction.x;
                 }
-        
+
                 // Handle vertical boundaries
                 if (this.y < 0) {
                     this.y = 0;
@@ -90,28 +101,28 @@ document.addEventListener("DOMContentLoaded", function() {
                     this.direction.y = -this.direction.y;
                 }
             }
-        
+
             // Change movement status based on interval
             if (now - this.lastMovementTime > this.movementInterval) {
                 this.moving = !this.moving;
                 this.lastMovementTime = now;
                 this.movementInterval = this.randomMovementInterval();
-                this.direction = { 
+                this.direction = {
                     x: getRandomInt(-1, 2), // Direction can be -1, 0, or 1
                     y: getRandomInt(-1, 2)  // Direction can be -1, 0, or 1
                 };
             }
-        
+
             // Change direction based on direction change interval
             if (now - this.lastDirectionChange > this.directionChangeInterval) {
-                this.direction = { 
-                    x: getRandomInt(-1, 2), 
-                    y: getRandomInt(-1, 2)  
+                this.direction = {
+                    x: getRandomInt(-1, 2),
+                    y: getRandomInt(-1, 2)
                 };
                 this.lastDirectionChange = now;
                 this.directionChangeInterval = this.randomDirectionChangeInterval();
             }
-        
+
             if (this.isCarnivore) {
                 // Handle carnivore behavior
                 allEntities.forEach(entity => {
@@ -124,8 +135,8 @@ document.addEventListener("DOMContentLoaded", function() {
             } else if (this.isHerbivore) {
                 // Handle herbivore behavior
                 allEntities.forEach(entity => {
-                    if (this !== entity && !entity.isHerbivore && !entity.isCarnivore && isOverlap(this, entity)) {
-                        // Herbivore consumes plant
+                    if (this !== entity && entity.plantType && this.allowedPlantTypes.includes(entity.plantType) && isOverlap(this, entity)) {
+                        // Herbivore consumes allowed plant
                         logEvent(`${this.name} ate ${entity.name}`);
                         allEntities.splice(allEntities.indexOf(entity), 1);
                     }
@@ -147,13 +158,13 @@ document.addEventListener("DOMContentLoaded", function() {
         const height = Math.max(0, y2 - y1);
         return width * height;
     }
-    
+
     function isOverlap(entity, otherEntity) {
         const overlapArea = getOverlapArea(entity, otherEntity);
         return overlapArea > 0;
     }
 
-    function spawnEntities(entityCount, names, spritePaths, defaultWidth, defaultHeight, isHerbivore, isCarnivore) {
+    function spawnEntities(entityCount, names, spritePaths, defaultWidth, defaultHeight, isHerbivore, isCarnivore, plantType = null, allowedPlantTypes = []) {
         const entities = [];
         for (let i = 0; i < entityCount; i++) {
             const x = getRandomInt(0, canvas.width - defaultWidth);
@@ -162,7 +173,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const name = names[i % names.length]; // Cycle through names
             const speedX = isHerbivore || isCarnivore ? getRandomInt(1, 3) : 0;
             const speedY = isHerbivore || isCarnivore ? getRandomInt(1, 3) : 0;
-            const entity = new Entity(name, x, y, sprite, defaultWidth, defaultHeight, speedX, speedY, isHerbivore, isCarnivore);
+            const entity = new Entity(name, x, y, sprite, defaultWidth, defaultHeight, speedX, speedY, isHerbivore, isCarnivore, plantType, allowedPlantTypes);
             entities.push(entity);
         }
         return entities;
@@ -192,15 +203,15 @@ document.addEventListener("DOMContentLoaded", function() {
     const dogSprites = ['Sprites/Animals/Dog.png'];
     const elephantSprites = ['Sprites/Animals/Elephant.png'];
 
-    const treeEntities = spawnEntities(8, treeNames, treeSprites, 350, 450, false, false);
-    const bushEntities = spawnEntities(5, bushNames, bushSprites, 120, 140, false, false);
-    const grassEntities = spawnEntities(20, grassNames, grassSprites, 30, 30, false, false);
-    const rabbitEntities = spawnEntities(4, rabbitNames, rabbitSprites, 100, 60, true, false);
-    const voleEntities = spawnEntities(6, voleNames, voleSprites, 80, 50, true, false);
+    const treeEntities = spawnEntities(8, treeNames, treeSprites, 350, 450, false, false, 'tree');
+    const bushEntities = spawnEntities(5, bushNames, bushSprites, 120, 140, false, false, 'bush');
+    const grassEntities = spawnEntities(20, grassNames, grassSprites, 30, 30, false, false, 'grass');
+    const rabbitEntities = spawnEntities(4, rabbitNames, rabbitSprites, 100, 60, true, false, null, ['grass', 'bush']);
+    const voleEntities = spawnEntities(6, voleNames, voleSprites, 80, 50, true, false, null, ['grass', 'bush']);
     const wolfEntities = spawnEntities(3, wolfNames, wolfSprites, 150, 100, false, true);
     const lionEntities = spawnEntities(2, lionNames, lionSprites, 200, 120, false, true);
     const dogEntities = spawnEntities(2, dogNames, dogSprites, 120, 80, false, true);
-    const elephantEntities = spawnEntities(2, elephantNames, elephantSprites, 400, 300, true, false);
+    const elephantEntities = spawnEntities(2, elephantNames, elephantSprites, 400, 300, true, false, null, ['grass', 'bush']);
 
     const allEntities = [
         ...treeEntities,
@@ -249,6 +260,7 @@ document.addEventListener("DOMContentLoaded", function() {
     function animate() {
         allEntities.forEach(entity => entity.update());
         drawEntities(allEntities);
+        updateStatistics(); // Update statistics on each frame
         requestAnimationFrame(animate);
         deleteDeadEntities(allEntities);
     }
