@@ -14,9 +14,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
     setupCanvas(); 
 
-    // Entity class with updated interaction logic
     class Entity {
-        constructor(x, y, sprite, width, height, speedX = 0, speedY = 0, isHerbivore = false, isCarnivore = false) {
+        constructor(x, y, sprite, width, height, speedX = 0, speedY = 0, type) {
             this.x = x;
             this.y = y;
             this.width = width;
@@ -37,8 +36,7 @@ document.addEventListener("DOMContentLoaded", function() {
             this.directionChangeInterval = this.randomDirectionChangeInterval();
             this.lastDirectionChange = Date.now();
             this.direction = { x: 0, y: 0 };
-            this.isHerbivore = isHerbivore;
-            this.isCarnivore = isCarnivore;
+            this.type = type; // 1=smallplant, 2=bigplant, 3=carnivore, 4=tinyherbivore, 5=hugeherbivore
             this.lastInteractionTime = Date.now(); // Initialize last interaction time
         }
     
@@ -61,71 +59,67 @@ document.addEventListener("DOMContentLoaded", function() {
         update() {
             const now = Date.now();
     
-            if (this.moving) {
-                this.x += this.speedX * this.direction.x;
-                this.y += this.speedY * this.direction.y;
+            // Only move if the entity is a herbivore, carnivore, or other animals (not plants)
+            if (this.type === 3 || this.type === 4 || this.type === 5 || this.type === 6) {
+                if (this.moving) {
+                    this.x += this.speedX * this.direction.x;
+                    this.y += this.speedY * this.direction.y;
     
-                // Handle horizontal boundaries
-                if (this.x < 0) {
-                    this.x = 0;
-                    this.direction.x = -this.direction.x;
-                } else if (this.x + this.width > canvas.width) {
-                    this.x = canvas.width - this.width;
-                    this.direction.x = -this.direction.x;
+                    // Handle horizontal boundaries
+                    if (this.x < 0) {
+                        this.x = 0;
+                        this.direction.x = -this.direction.x;
+                    } else if (this.x + this.width > canvas.width) {
+                        this.x = canvas.width - this.width;
+                        this.direction.x = -this.direction.x;
+                    }
+    
+                    // Handle vertical boundaries
+                    if (this.y < 0) {
+                        this.y = 0;
+                        this.direction.y = -this.direction.y;
+                    } else if (this.y + this.height > canvas.height) {
+                        this.y = canvas.height - this.height;
+                        this.direction.y = -this.direction.y;
+                    }
                 }
     
-                // Handle vertical boundaries
-                if (this.y < 0) {
-                    this.y = 0;
-                    this.direction.y = -this.direction.y;
-                } else if (this.y + this.height > canvas.height) {
-                    this.y = canvas.height - this.height;
-                    this.direction.y = -this.direction.y;
+                // Change movement status based on interval
+                if (now - this.lastMovementTime > this.movementInterval) {
+                    this.moving = !this.moving;
+                    this.lastMovementTime = now;
+                    this.movementInterval = this.randomMovementInterval();
+                    this.direction = {
+                        x: getRandomInt(-1, 2), // Direction can be -1, 0, or 1
+                        y: getRandomInt(-1, 2) // Direction can be -1, 0, or 1
+                    };
                 }
-            }
     
-            // Change movement status based on interval
-            if (now - this.lastMovementTime > this.movementInterval) {
-                this.moving = !this.moving;
-                this.lastMovementTime = now;
-                this.movementInterval = this.randomMovementInterval();
-                this.direction = {
-                    x: getRandomInt(-1, 2), // Direction can be -1, 0, or 1
-                    y: getRandomInt(-1, 2) // Direction can be -1, 0, or 1
-                };
-            }
-    
-            // Change direction based on direction change interval
-            if (now - this.lastDirectionChange > this.directionChangeInterval) {
-                this.direction = {
-                    x: getRandomInt(-1, 2),
-                    y: getRandomInt(-1, 2)
-                };
-                this.lastDirectionChange = now;
-                this.directionChangeInterval = this.randomDirectionChangeInterval();
+                // Change direction based on direction change interval
+                if (now - this.lastDirectionChange > this.directionChangeInterval) {
+                    this.direction = {
+                        x: getRandomInt(-1, 2),
+                        y: getRandomInt(-1, 2)
+                    };
+                    this.lastDirectionChange = now;
+                    this.directionChangeInterval = this.randomDirectionChangeInterval();
+                }
             }
     
             // Handle interactions (eating)
-            if (this.isCarnivore) {
-                allEntities.forEach(entity => {
-                    if (this !== entity && entity.isHerbivore && isOverlap(this, entity)) {
-                        // Carnivore eats herbivore
-                        allEntities.splice(allEntities.indexOf(entity), 1);
-                        this.lastInteractionTime = now; // Update last interaction time
-                    }
-                });
-            } else if (this.isHerbivore) {
-                allEntities.forEach(entity => {
-                    if (this !== entity && !entity.isHerbivore && !entity.isCarnivore && isOverlap(this, entity)) {
-                        // Herbivore consumes plant
-                        allEntities.splice(allEntities.indexOf(entity), 1);
+            if (this.type === 3 || this.type === 4 || this.type === 5) { // Only entities that can eat
+                allEntities.forEach(otherEntity => {
+                    if (this !== otherEntity && canEat(this, otherEntity) && isOverlap(this, otherEntity)) {
+                        // Perform eating action based on entity types
+                        console.log(`Entity ${this.type} is eating Entity ${otherEntity.type}`);
+                        allEntities.splice(allEntities.indexOf(otherEntity), 1);
                         this.lastInteractionTime = now; // Update last interaction time
                     }
                 });
             }
     
             // Check starvation only for herbivores and carnivores
-            if (this.isHerbivore || this.isCarnivore) {
+            if (this.type === 3 || this.type === 4) { // Only herbivores
                 this.checkStarvation(now);
             }
         }
@@ -135,23 +129,28 @@ document.addEventListener("DOMContentLoaded", function() {
     
             if (now - this.lastInteractionTime > starvationTimeLimit) {
                 // Entity has starved
-                console.log(`Entity has starved: ${this}`);
+                console.log(`Entity ${this.type} has starved`);
                 // Perform actions like removing the entity from the simulation
                 allEntities.splice(allEntities.indexOf(this), 1);
             }
         }
     }
     
-    // Helper function to get random integer
-    function getRandomInt(min, max) {
-        return Math.floor(Math.random() * (max - min)) + min;
-    }
     
     
-    // Helper function to get random integer
-    function getRandomInt(min, max) {
-        return Math.floor(Math.random() * (max - min)) + min;
+    function canEat(entity, otherEntity) {
+        switch (entity.type) {
+            case 3: // Carnivores (type 3) can eat type 4 (tinyherbeater) and type 5 (hugeherbeater)
+                return otherEntity.type === 4 || otherEntity.type === 5;
+            case 4: // tinyherbeaters (type 4) can eat small plants (type 1)
+                return otherEntity.type === 1;
+            case 5: // hugeherbeaters (type 5) can eat big plants (type 2)
+                return otherEntity.type === 2;
+            default:
+                return false; // Default to false if no specific rule matches
+        }
     }
+    
     
 
 
@@ -201,17 +200,18 @@ document.addEventListener("DOMContentLoaded", function() {
     const lionSprites = ['Sprites/Animals/Lion.png'];
     const dogSprites = ['Sprites/Animals/Dog.png'];
     const elephantBig = ['Sprites/Animals/Elephant.png'];
+    const carrot = ['Sprites/Plants/Carrot.png'];
 
-    const treeEntities = spawnEntities(8, tree, 350, 450, false, false);
-    const bushEntities = spawnEntities(5, bush, 120, 140, false, false);
-    const grassEntities = spawnEntities(20, grass, 30, 30, false, false);
-    const rabbitEntities = spawnEntities(4, rabbitSprites, 100, 60, true, false);
-    const voleEntities = spawnEntities(6, voleSprites, 80, 50, true, false);
-    const wolfEntities = spawnEntities(3, wolfSprites, 150, 100, false, true);
-    const lionEntities = spawnEntities(2, lionSprites, 200, 120, false, true);
-    const dogEntities = spawnEntities(2, dogSprites, 120, 80, false, true);
-    const elephantEntities = spawnEntities(2, elephantBig, 400, 300, true, false);
-    
+    const treeEntities = spawnEntities(8, tree, 350, 450, 2);
+    const bushEntities = spawnEntities(5, bush, 120, 140, 2);
+    const grassEntities = spawnEntities(20, grass, 30, 30, 1);
+    const rabbitEntities = spawnEntities(4, rabbitSprites, 100, 60, 4);
+    const voleEntities = spawnEntities(6, voleSprites, 80, 50, 4);
+    const wolfEntities = spawnEntities(3, wolfSprites, 150, 100, 3);
+    const lionEntities = spawnEntities(2, lionSprites, 200, 120, 3);
+    const dogEntities = spawnEntities(2, dogSprites, 120, 80, 3);
+    const elephantEntities = spawnEntities(2, elephantBig, 300, 200, 5);
+    const carrotEntities = spawnEntities(10, carrot, 30, 30, 1);
 
     const allEntities = [
         ...treeEntities,
@@ -222,7 +222,8 @@ document.addEventListener("DOMContentLoaded", function() {
         ...wolfEntities,
         ...lionEntities,
         ...dogEntities,
-        ...elephantEntities
+        ...elephantEntities,
+        ...carrotEntities
     ];
 
     console.log(`Total entities created: ${allEntities.length}`);
