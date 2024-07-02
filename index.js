@@ -20,8 +20,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
     class Entity {
         constructor(x, y, sprite, width, height, speedX = 0, speedY = 0, isHerbivore = false, isCarnivore = false) {
-            this.x = x;
-            this.y = y;
+            this.x = x-width<width? width:x-width;
+            this.y = y-height<height?height:y-height;
             this.width = width;
             this.height = height;
             this.sprite = new Image();
