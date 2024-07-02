@@ -247,6 +247,16 @@ document.addEventListener("DOMContentLoaded", function() {
             this.name="wolf";
         }
     }
+=======
+    // Function to log events
+    function logEvent(event) {
+        const logElement = document.getElementById('log');
+        const newLogEntry = document.createElement('li');
+        newLogEntry.textContent = event;
+        logElement.appendChild(newLogEntry);
+    }
+
+    
 
     function getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min)) + min;
@@ -279,7 +289,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         return entities;
     }
-
     function spawnPlant(entityClass, entityCount) {
         const entities = [];
         for (let i = 0; i < entityCount; i++) {
@@ -304,7 +313,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const bushEntities = spawnPlant(Bush, 1);
     const treeEntities = spawnPlant(Tree, 1);
     const grassEntities = spawnPlant(Grass, 20);
-    const carrotEntities = spawnPlant(Carrot, 1);
+    const carrotEntities = spawnPlant(Carrot, 1);  
 
     const allEntities = [
         ...treeEntities,
