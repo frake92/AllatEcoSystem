@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 // Handle carnivore and herbivore behavior
                 allEntities.forEach(entity => {
                     if (this !== entity && isOverlap(this, entity)) {
-                        if (this.food.includes(entity.constructor.name)) {
+                        if (this.food.includes(entity.name)) {
                             // Entity can be eaten
                             allEntities.splice(allEntities.indexOf(entity), 1);
                         }
@@ -143,31 +143,36 @@ document.addEventListener("DOMContentLoaded", function() {
     class Bush extends Plants { 
         constructor(x,y) {
             super(x,y,'Sprites/Plants/Bush.png',120,140);
+            this.name="bush";
         }
     }
     
     class Carrot extends Plants { 
         constructor(x,y) {
             super(x,y,'Sprites/Plants/Carrot.png',50,50);
+            this.name="carrot";
         }
     }
     
     class Grass extends Plants { 
         constructor(x,y) {
             super(x,y,'Sprites/Plants/Grass1.png',30,30);
+            this.name="grass";
         }
     }
     
     class Tree extends Plants { 
         constructor(x,y) {
             super(x,y,'Sprites/Plants/Tree.png',350,450);
+            this.name="tree";
         }
     }
     
     class Cat extends Carnivores{
         constructor(x, y, speedX, speedY){
             super(x,y,'Sprites/Animals/Cat.png',100,60,speedX,speedY);
-            this.food=["duck", "rabbit", "voles"];
+            this.food=["duck", "rabbit", "vole", "fly"];
+            this.name="cat";
         }
     }
     
@@ -175,13 +180,15 @@ document.addEventListener("DOMContentLoaded", function() {
         constructor(x, y, speedX, speedY) {
             super(x,y,'Sprites/Animals/Deer.png',200,130,speedX,speedY);
             this.food=["bush", "grass"];
+            this.name="deer";
         }
     }
     
     class Dog extends Carnivores{ 
         constructor(x, y, speedX, speedY){
             super(x,y,'Sprites/Animals/Dog.png',120,80,speedX,speedY);
-            this.food.concat(["deer", "duck", "rabbit", "voles", "cat"])
+            this.food.concat(["deer", "duck", "rabbit", "vole", "cat"])
+            this.name="dog";
         }
     }
     
@@ -189,6 +196,7 @@ document.addEventListener("DOMContentLoaded", function() {
         constructor(x, y, speedX, speedY) {
             super(x,y,'Sprites/Animals/Duck.png',200,130,speedX,speedY);
             this.food = ["grass"];
+            this.name="duck";
         }
     }
     
@@ -196,6 +204,7 @@ document.addEventListener("DOMContentLoaded", function() {
         constructor(x, y, speedX, speedY) {
             super(x,y,'Sprites/Animals/Elephant.png',400,300,speedX,speedY);
             this.food=["tree", "bush"];
+            this.name="elephant";
         }
     }
     
@@ -203,13 +212,15 @@ document.addEventListener("DOMContentLoaded", function() {
         constructor(x, y, speedX, speedY) {
             super(x,y,'Sprites/Animals/Fly.png',20,13,speedX,speedY);
             this.food= [ "grass"];
+            this.name="fly";
         }
     }
     
     class Lion extends Carnivores { 
         constructor(x, y, speedX, speedY) {
             super(x,y,'Sprites/Animals/Lion.png',200,120,speedX,speedY);
-            this.food=["cat", "deer", "dog", "duck", "elephant", "rabbit", "voles", "wolf"];
+            this.food=["cat", "deer", "dog", "duck", "elephant", "rabbit", "vole", "wolf"];
+            this.name="lion";
         }
     }
     
@@ -217,6 +228,7 @@ document.addEventListener("DOMContentLoaded", function() {
         constructor(x, y, speedX, speedY) {
             super(x,y,'Sprites/Animals/Rabbit.png',100,60,speedX,speedY);
             this.food = ["carrot", "grass"];
+            this.name="rabbit";
         }
     }
     
@@ -224,13 +236,15 @@ document.addEventListener("DOMContentLoaded", function() {
         constructor(x, y, speedX, speedY) {
             super(x,y,'Sprites/Animals/Voles.png',80,50,speedX,speedY);
             this.food = ["grass"];
+            this.name="vole";
         }
     }
     
     class Wolf extends Carnivores{ 
         constructor(x, y, speedX, speedY) {
             super(x,y,'Sprites/Animals/Wolf.png',150,100,speedX,speedY);
-            this.food.concat(["duck", "rabbit", "voles", "deer", "dog", "cat"]);
+            this.food.concat(["duck", "rabbit", "vole", "deer", "dog", "cat"]);
+            this.name="wolf";
         }
     }
 
