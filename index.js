@@ -57,7 +57,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         draw() {
-            console.log(`Drawing entity at (${this.x}, ${this.y}) with size (${this.width}, ${this.height})`);
             ctx.drawImage(this.sprite, this.x, this.y, this.width, this.height);
         }
 
