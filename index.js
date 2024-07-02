@@ -232,6 +232,7 @@ class Entity {
         drawEntities(allEntities);
         requestAnimationFrame(animate);
         deleteDeadEntities(allEntities);
+
     }
 
     animate();  // Start the animation
