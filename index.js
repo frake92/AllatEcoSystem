@@ -42,31 +42,33 @@ document.addEventListener("DOMContentLoaded", function() {
             this.isHerbivore = isHerbivore;
             this.isCarnivore = isCarnivore;
             this.food = [];
+            this.lastMealTime = Date.now();  // Track time of last meal
+            this.timeToDie = 5000;  // 5 seconds in milliseconds
         }
-
+    
         randomMovementInterval() {
             return Math.floor(Math.random() * (5000 - 1000)) + 1000; // Random interval between 1 and 5 seconds
         }
-
+    
         randomDirectionChangeInterval() {
             return Math.floor(Math.random() * (3000 - 1000)) + 1000; // Random interval between 1 and 3 seconds
         }
-
+    
         getY2() {
             return this.y + this.height + 1;
         }
-
+    
         draw() {
             ctx.drawImage(this.sprite, this.x, this.y, this.width, this.height);
         }
-
+    
         update() {
             const now = Date.now();
-
+    
             if (this.moving) {
                 this.x += this.speedX * this.direction.x;
                 this.y += this.speedY * this.direction.y;
-
+    
                 // Handle horizontal boundaries
                 if (this.x < 0) {
                     this.x = 0;
@@ -75,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     this.x = canvas.width - this.width;
                     this.direction.x = -this.direction.x;
                 }
-
+    
                 // Handle vertical boundaries
                 if (this.y < 0) {
                     this.y = 0;
@@ -85,42 +87,56 @@ document.addEventListener("DOMContentLoaded", function() {
                     this.direction.y = -this.direction.y;
                 }
             }
-
+    
             // Change movement status based on interval
             if (now - this.lastMovementTime > this.movementInterval) {
                 this.moving = !this.moving;
                 this.lastMovementTime = now;
                 this.movementInterval = this.randomMovementInterval();
-                this.direction = { 
+                this.direction = {
                     x: getRandomInt(-1, 2), // Direction can be -1, 0, or 1
                     y: getRandomInt(-1, 2)  // Direction can be -1, 0, or 1
                 };
             }
-
+    
             // Change direction based on direction change interval
             if (now - this.lastDirectionChange > this.directionChangeInterval) {
-                this.direction = { 
-                    x: getRandomInt(-1, 2), 
-                    y: getRandomInt(-1, 2)  
+                this.direction = {
+                    x: getRandomInt(-1, 2),
+                    y: getRandomInt(-1, 2)
                 };
                 this.lastDirectionChange = now;
                 this.directionChangeInterval = this.randomDirectionChangeInterval();
             }
-
+    
             if (this.isCarnivore || this.isHerbivore) {
                 // Handle carnivore and herbivore behavior
                 allEntities.forEach(entity => {
                     if (this !== entity && isOverlap(this, entity)) {
                         if (this.food.includes(entity.name)) {
-                            // Entity can be eaten
-                            logEvent(`${this.name} ate ${entity.name}`)
+                            logEvent(`${this.name} ate ${entity.name}`);
                             allEntities.splice(allEntities.indexOf(entity), 1);
+                            this.feed();  // Feed the carnivore/herbivore
                         }
                     }
                 });
             }
         }
+    
+        isDead() {
+            if (this.isHerbivore || this.isCarnivore) {
+                const now = Date.now();
+                return (now - this.lastMealTime > this.timeToDie);
+            } else {
+                return false;  // Entities that are neither herbivore nor carnivore don't die
+            }
+        }
+    
+        feed() {
+            this.lastMealTime = Date.now();
+        }
     }
+    
     
     class Carnivores extends Entity {
         constructor(x, y, sprite, width, height, speedX, speedY) {
