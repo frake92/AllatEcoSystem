@@ -114,7 +114,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 // Handle carnivore and herbivore behavior
                 allEntities.forEach(entity => {
                     if (this !== entity && isOverlap(this, entity)) {
-                        if (this.food.includes(entity.name)) {
+                        let rnd=Math.random()*this.timeToDie
+                        let deathtimer=now-this.lastMealTime
+                        if (this.food.includes(entity.name)&&(deathtimer<this.timeToDie/2||deathtimer<rnd)) {
                             logEvent(`${this.name} ate ${entity.name}`);
                             allEntities.splice(allEntities.indexOf(entity), 1);
                             this.feed();  // Feed the carnivore/herbivore
