@@ -44,6 +44,7 @@ document.addEventListener("DOMContentLoaded", function() {
             this.food = [];
             this.lastMealTime = Date.now();  // Track time of last meal
             this.timeToDie = 5000;  // 5 seconds in milliseconds
+            this.dead = false; // Track if the entity is dead
         }
     
         randomMovementInterval() {
@@ -121,6 +122,12 @@ document.addEventListener("DOMContentLoaded", function() {
                     }
                 });
             }
+    
+            // Check if the entity should die
+            if (this.isDead()) {
+                this.dead = true;
+                logEvent(`${this.name} died of hunger`);
+            }
         }
     
         isDead() {
@@ -136,6 +143,7 @@ document.addEventListener("DOMContentLoaded", function() {
             this.lastMealTime = Date.now();
         }
     }
+    
     
     
     class Carnivores extends Entity {
