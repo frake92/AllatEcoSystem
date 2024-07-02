@@ -246,6 +246,15 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    function logEvent(event) {
+        const logElement = document.getElementById('log');
+        const newLogEntry = document.createElement('li');
+        newLogEntry.textContent = event;
+        logElement.appendChild(newLogEntry);
+    }
+
+    
+
     function getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min)) + min;
     }
@@ -277,7 +286,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         return entities;
     }
-
     function spawnPlant(entityClass, entityCount) {
         const entities = [];
         for (let i = 0; i < entityCount; i++) {
@@ -288,7 +296,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         return entities;
     }
-
 
     const spawnedEntities = [];
     function spawnRandom(numberOfEntities, entityType) {
