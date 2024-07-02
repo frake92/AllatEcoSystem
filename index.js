@@ -1,3 +1,5 @@
+
+
 document.addEventListener("DOMContentLoaded", function() {
     const canvas = document.getElementById('ecosystemCanvas');
     const ctx = canvas.getContext('2d');
@@ -12,19 +14,10 @@ document.addEventListener("DOMContentLoaded", function() {
         ctx.imageSmoothingEnabled = true;
     }
 
-    setupCanvas(); 
-
-    // Function to log events
-    function logEvent(event) {
-        const logElement = document.getElementById('log');
-        const newLogEntry = document.createElement('li');
-        newLogEntry.textContent = event;
-        logElement.appendChild(newLogEntry);
-    }
+    setupCanvas();
 
     class Entity {
-        constructor(name, x, y, sprite, width, height, speedX = 0, speedY = 0, isHerbivore = false, isCarnivore = false) {
-            this.name = name;
+        constructor(x, y, sprite, width, height, speedX = 0, speedY = 0, isHerbivore = false, isCarnivore = false) {
             this.x = x;
             this.y = y;
             this.width = width;
@@ -32,6 +25,7 @@ document.addEventListener("DOMContentLoaded", function() {
             this.sprite = new Image();
             this.sprite.src = sprite;
             this.sprite.onload = () => {
+                console.log(`Image loaded: ${sprite}`);
                 this.draw();
             };
             this.sprite.onerror = () => {
@@ -47,6 +41,7 @@ document.addEventListener("DOMContentLoaded", function() {
             this.direction = { x: 0, y: 0 };
             this.isHerbivore = isHerbivore;
             this.isCarnivore = isCarnivore;
+            this.food = [];
         }
 
         randomMovementInterval() {
@@ -62,16 +57,17 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         draw() {
+            console.log(`Drawing entity at (${this.x}, ${this.y}) with size (${this.width}, ${this.height})`);
             ctx.drawImage(this.sprite, this.x, this.y, this.width, this.height);
         }
 
         update() {
             const now = Date.now();
-        
+
             if (this.moving) {
                 this.x += this.speedX * this.direction.x;
                 this.y += this.speedY * this.direction.y;
-        
+
                 // Handle horizontal boundaries
                 if (this.x < 0) {
                     this.x = 0;
@@ -80,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     this.x = canvas.width - this.width;
                     this.direction.x = -this.direction.x;
                 }
-        
+
                 // Handle vertical boundaries
                 if (this.y < 0) {
                     this.y = 0;
@@ -90,7 +86,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     this.direction.y = -this.direction.y;
                 }
             }
-        
+
             // Change movement status based on interval
             if (now - this.lastMovementTime > this.movementInterval) {
                 this.moving = !this.moving;
@@ -101,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     y: getRandomInt(-1, 2)  // Direction can be -1, 0, or 1
                 };
             }
-        
+
             // Change direction based on direction change interval
             if (now - this.lastDirectionChange > this.directionChangeInterval) {
                 this.direction = { 
@@ -111,28 +107,156 @@ document.addEventListener("DOMContentLoaded", function() {
                 this.lastDirectionChange = now;
                 this.directionChangeInterval = this.randomDirectionChangeInterval();
             }
-        
-            if (this.isCarnivore) {
-                // Handle carnivore behavior
+
+            if (this.isCarnivore || this.isHerbivore) {
+                // Handle carnivore and herbivore behavior
                 allEntities.forEach(entity => {
-                    if (this !== entity && entity.isHerbivore && isOverlap(this, entity)) {
-                        // Carnivore eats herbivore
-                        logEvent(`${this.name} ate ${entity.name}`);
-                        allEntities.splice(allEntities.indexOf(entity), 1);
-                    }
-                });
-            } else if (this.isHerbivore) {
-                // Handle herbivore behavior
-                allEntities.forEach(entity => {
-                    if (this !== entity && !entity.isHerbivore && !entity.isCarnivore && isOverlap(this, entity)) {
-                        // Herbivore consumes plant
-                        logEvent(`${this.name} ate ${entity.name}`);
-                        allEntities.splice(allEntities.indexOf(entity), 1);
+                    if (this !== entity && isOverlap(this, entity)) {
+                        if (this.food.includes(entity.name)) {
+                            // Entity can be eaten
+                            allEntities.splice(allEntities.indexOf(entity), 1);
+                        }
                     }
                 });
             }
         }
     }
+    
+    class Carnivores extends Entity {
+        constructor(x, y, sprite, width, height, speedX, speedY) {
+            super(x,y,sprite,width,height, speedX, speedY, false, true);
+        }
+    }
+    
+    class HerbEater extends Entity {
+        constructor(x, y, sprite, width, height, speedX, speedY) {
+            super(x,y,sprite,width,height, speedX, speedY, true, false);
+        }
+    }
+    
+    class Plants extends Entity{
+        constructor(x,y,sprite,widht,height) {
+            super(x,y,sprite, widht,height,0,0,false,false)
+        }
+    }
+    
+    class Bush extends Plants { 
+        constructor(x,y) {
+            super(x,y,'Sprites/Plants/Bush.png',120,140);
+            this.name="bush";
+        }
+    }
+    
+    class Carrot extends Plants { 
+        constructor(x,y) {
+            super(x,y,'Sprites/Plants/Carrot.png',50,50);
+            this.name="carrot";
+        }
+    }
+    
+    class Grass extends Plants { 
+        constructor(x,y) {
+            super(x,y,'Sprites/Plants/Grass1.png',30,30);
+            this.name="grass";
+        }
+    }
+    
+    class Tree extends Plants { 
+        constructor(x,y) {
+            super(x,y,'Sprites/Plants/Tree.png',350,450);
+            this.name="tree";
+        }
+    }
+    
+    class Cat extends Carnivores{
+        constructor(x, y, speedX, speedY){
+            super(x,y,'Sprites/Animals/Cat.png',100,60,speedX,speedY);
+            this.food=["duck", "rabbit", "vole", "fly"];
+            this.name="cat";
+        }
+    }
+    
+    class Deer extends HerbEater { 
+        constructor(x, y, speedX, speedY) {
+            super(x,y,'Sprites/Animals/Deer.png',200,130,speedX,speedY);
+            this.food=["bush", "grass"];
+            this.name="deer";
+        }
+    }
+    
+    class Dog extends Carnivores{ 
+        constructor(x, y, speedX, speedY){
+            super(x,y,'Sprites/Animals/Dog.png',120,80,speedX,speedY);
+            this.food.concat(["deer", "duck", "rabbit", "vole", "cat"])
+            this.name="dog";
+        }
+    }
+    
+    class Duck extends HerbEater { 
+        constructor(x, y, speedX, speedY) {
+            super(x,y,'Sprites/Animals/Duck.png',200,130,speedX,speedY);
+            this.food = ["grass"];
+            this.name="duck";
+        }
+    }
+    
+    class Elephant extends HerbEater { 
+        constructor(x, y, speedX, speedY) {
+            super(x,y,'Sprites/Animals/Elephant.png',400,300,speedX,speedY);
+            this.food=["tree", "bush"];
+            this.name="elephant";
+        }
+    }
+    
+    class Fly extends HerbEater { 
+        constructor(x, y, speedX, speedY) {
+            super(x,y,'Sprites/Animals/Fly.png',20,13,speedX,speedY);
+            this.food= [ "grass"];
+            this.name="fly";
+        }
+    }
+    
+    class Lion extends Carnivores { 
+        constructor(x, y, speedX, speedY) {
+            super(x,y,'Sprites/Animals/Lion.png',200,120,speedX,speedY);
+            this.food=["cat", "deer", "dog", "duck", "elephant", "rabbit", "vole", "wolf"];
+            this.name="lion";
+        }
+    }
+    
+    class Rabbit extends HerbEater { 
+        constructor(x, y, speedX, speedY) {
+            super(x,y,'Sprites/Animals/Rabbit.png',100,60,speedX,speedY);
+            this.food = ["carrot", "grass"];
+            this.name="rabbit";
+        }
+    }
+    
+    class Vole extends HerbEater { 
+        constructor(x, y, speedX, speedY) {
+            super(x,y,'Sprites/Animals/Voles.png',80,50,speedX,speedY);
+            this.food = ["grass"];
+            this.name="vole";
+        }
+    }
+    
+    class Wolf extends Carnivores{ 
+        constructor(x, y, speedX, speedY) {
+            super(x,y,'Sprites/Animals/Wolf.png',150,100,speedX,speedY);
+            this.food.concat(["duck", "rabbit", "vole", "deer", "dog", "cat"]);
+            this.name="wolf";
+        }
+    }
+=======
+    // Function to log events
+    function logEvent(event) {
+        const logElement = document.getElementById('log');
+        const newLogEntry = document.createElement('li');
+        newLogEntry.textContent = event;
+        logElement.appendChild(newLogEntry);
+    }
+
+    
 
     function getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min)) + min;
@@ -147,60 +271,49 @@ document.addEventListener("DOMContentLoaded", function() {
         const height = Math.max(0, y2 - y1);
         return width * height;
     }
-    
+
     function isOverlap(entity, otherEntity) {
         const overlapArea = getOverlapArea(entity, otherEntity);
         return overlapArea > 0;
     }
 
-    function spawnEntities(entityCount, names, spritePaths, defaultWidth, defaultHeight, isHerbivore, isCarnivore) {
+    function spawnAnimal(entityClass, entityCount) {
         const entities = [];
         for (let i = 0; i < entityCount; i++) {
-            const x = getRandomInt(0, canvas.width - defaultWidth);
-            const y = getRandomInt(0, canvas.height - defaultHeight);
-            const sprite = spritePaths[getRandomInt(0, spritePaths.length)];
-            const name = names[i % names.length]; // Cycle through names
-            const speedX = isHerbivore || isCarnivore ? getRandomInt(1, 3) : 0;
-            const speedY = isHerbivore || isCarnivore ? getRandomInt(1, 3) : 0;
-            const entity = new Entity(name, x, y, sprite, defaultWidth, defaultHeight, speedX, speedY, isHerbivore, isCarnivore);
+            const x = getRandomInt(0, canvas.width);
+            const y = getRandomInt(0, canvas.height);
+            const speedX = getRandomInt(1, 3);
+            const speedY = getRandomInt(1, 3);
+            const entity = new entityClass(x, y, speedX, speedY);
+            entities.push(entity);
+        }
+        return entities;
+    }
+    function spawnPlant(entityClass, entityCount) {
+        const entities = [];
+        for (let i = 0; i < entityCount; i++) {
+            const x = getRandomInt(0, canvas.width);
+            const y = getRandomInt(0, canvas.height);
+            const entity = new entityClass(x, y);
             entities.push(entity);
         }
         return entities;
     }
 
-    const treeNames = ['Tree'];
-    const grassNames = ['Grass'];
-    const bushNames = ['Bush'];
-    const rabbitNames = ['Rabbit'];
-    const voleNames = ['Vole'];
-    const wolfNames = ['Wolf'];
-    const lionNames = ['Lion'];
-    const dogNames = ['Dog'];
-    const elephantNames = ['Elephant'];
-
-    const treeSprites = ['Sprites/Plants/Tree.png'];
-    const grassSprites = [
-        'Sprites/Plants/Grass1.png',
-        'Sprites/Plants/Grass2.png',
-        'Sprites/Plants/Grass3.png',
-    ];
-    const bushSprites = ['Sprites/Plants/Bush.png'];
-    const rabbitSprites = ['Sprites/Animals/Rabbit.png'];
-    const voleSprites = ['Sprites/Animals/Voles.png'];
-    const wolfSprites = ['Sprites/Animals/Wolf.png'];
-    const lionSprites = ['Sprites/Animals/Lion.png'];
-    const dogSprites = ['Sprites/Animals/Dog.png'];
-    const elephantSprites = ['Sprites/Animals/Elephant.png'];
-
-    const treeEntities = spawnEntities(8, treeNames, treeSprites, 350, 450, false, false);
-    const bushEntities = spawnEntities(5, bushNames, bushSprites, 120, 140, false, false);
-    const grassEntities = spawnEntities(20, grassNames, grassSprites, 30, 30, false, false);
-    const rabbitEntities = spawnEntities(4, rabbitNames, rabbitSprites, 100, 60, true, false);
-    const voleEntities = spawnEntities(6, voleNames, voleSprites, 80, 50, true, false);
-    const wolfEntities = spawnEntities(3, wolfNames, wolfSprites, 150, 100, false, true);
-    const lionEntities = spawnEntities(2, lionNames, lionSprites, 200, 120, false, true);
-    const dogEntities = spawnEntities(2, dogNames, dogSprites, 120, 80, false, true);
-    const elephantEntities = spawnEntities(2, elephantNames, elephantSprites, 400, 300, true, false);
+    const catEntities = spawnAnimal(Cat, 1);
+    const deerEntities = spawnAnimal(Deer, 1);
+    const dogEntities = spawnAnimal(Dog, 1);
+    const duckEntities = spawnAnimal(Duck, 1);
+    const elephantEntities = spawnAnimal(Elephant, 1);
+    const flyEntites = spawnAnimal(Fly, 1);
+    const lionEntities = spawnAnimal(Lion, 1);
+    const rabbitEntities = spawnAnimal(Rabbit, 1);
+    const voleEntities = spawnAnimal(Vole, 1);
+    const wolfEntities = spawnAnimal(Wolf, 1);
+    const bushEntities = spawnPlant(Bush, 1);
+    const treeEntities = spawnPlant(Tree, 1);
+    const grassEntities = spawnPlant(Grass, 20);
+    const carrotEntities = spawnPlant(Carrot, 1);  
 
     const allEntities = [
         ...treeEntities,
@@ -211,7 +324,12 @@ document.addEventListener("DOMContentLoaded", function() {
         ...wolfEntities,
         ...lionEntities,
         ...dogEntities,
-        ...elephantEntities
+        ...elephantEntities,
+        ...catEntities,
+        ...deerEntities,
+        ...duckEntities,
+        ...flyEntites,
+        ...carrotEntities
     ];
 
     console.log(`Total entities created: ${allEntities.length}`);
@@ -240,7 +358,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function deleteDeadEntities(entities) {
         for (let i = entities.length - 1; i >= 0; i--) {
-            if (entities[i].isDead()) {
+            if (entities[i].isDead && entities[i].isDead()) {
                 entities.splice(i, 1);
             }
         }
