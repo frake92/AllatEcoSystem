@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 // Handle carnivore and herbivore behavior
                 allEntities.forEach(entity => {
                     if (this !== entity && isOverlap(this, entity)) {
-                        if (this.diet.includes(entity.constructor.name)) {
+                        if (this.food.includes(entity.constructor.name)) {
                             // Entity can be eaten
                             allEntities.splice(allEntities.indexOf(entity), 1);
                         }
@@ -136,31 +136,31 @@ document.addEventListener("DOMContentLoaded", function() {
     
     class Plants extends Entity{
         constructor(x,y,sprite,widht,height) {
-            super(x,y,sprite, widht,height)
+            super(x,y,sprite, widht,height,0,0,false,false)
         }
     }
     
     class Bush extends Plants { 
         constructor(x,y) {
-            super(x,y,'Sprites/Plants/Bush',120,140);
+            super(x,y,'Sprites/Plants/Bush.png',120,140);
         }
     }
     
     class Carrot extends Plants { 
         constructor(x,y) {
-            super(x,y,'Sprites/Plants/Carrot',50,50);
+            super(x,y,'Sprites/Plants/Carrot.png',50,50);
         }
     }
     
     class Grass extends Plants { 
         constructor(x,y) {
-            super(x,y,'Sprites/Plants/Grass1',30,30);
+            super(x,y,'Sprites/Plants/Grass1.png',30,30);
         }
     }
     
     class Tree extends Plants { 
         constructor(x,y) {
-            super(x,y,'Sprites/Plants/Tree',350,450);
+            super(x,y,'Sprites/Plants/Tree.png',350,450);
         }
     }
     
@@ -206,7 +206,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
     
-    class Lion extends Carnivore { 
+    class Lion extends Carnivores { 
         constructor(x, y, speedX, speedY) {
             super(x,y,'Sprites/Animals/Lion.png',200,120,speedX,speedY);
             this.food=["cat", "deer", "dog", "duck", "elephant", "rabbit", "voles", "wolf"];
