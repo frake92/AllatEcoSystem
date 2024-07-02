@@ -247,8 +247,7 @@ document.addEventListener("DOMContentLoaded", function() {
             this.name="wolf";
         }
     }
-=======
-    // Function to log events
+
     function logEvent(event) {
         const logElement = document.getElementById('log');
         const newLogEntry = document.createElement('li');
@@ -300,37 +299,43 @@ document.addEventListener("DOMContentLoaded", function() {
         return entities;
     }
 
-    const catEntities = spawnAnimal(Cat, 1);
-    const deerEntities = spawnAnimal(Deer, 1);
-    const dogEntities = spawnAnimal(Dog, 1);
-    const duckEntities = spawnAnimal(Duck, 1);
-    const elephantEntities = spawnAnimal(Elephant, 1);
-    const flyEntites = spawnAnimal(Fly, 1);
-    const lionEntities = spawnAnimal(Lion, 1);
-    const rabbitEntities = spawnAnimal(Rabbit, 1);
-    const voleEntities = spawnAnimal(Vole, 1);
-    const wolfEntities = spawnAnimal(Wolf, 1);
-    const bushEntities = spawnPlant(Bush, 1);
-    const treeEntities = spawnPlant(Tree, 1);
-    const grassEntities = spawnPlant(Grass, 20);
-    const carrotEntities = spawnPlant(Carrot, 1);  
+    const spawnedEntities = [];
+    function spawnRandom(numberOfEntities, entityType) {
+        switch (entityType) {
+            // plants
+            case 0:
+                const plantList = [Carrot, Grass, Tree, Bush];
+                for (let i = 0; i < numberOfEntities; i++) {
+                    const randomIndex = Math.floor(Math.random() * plantList.length);
+                    spawnedEntities.push(spawnPlant(plantList[randomIndex], 1)[0]);
+                }
+                break; 
+            // herbivores
+            case 1:
+                const herbivoreList = [Deer, Duck, Elephant, Rabbit, Fly, Vole];
+                for (let i = 0; i < numberOfEntities; i++) {
+                    const randomIndex = Math.floor(Math.random() * herbivoreList.length);
+                    spawnedEntities.push(spawnAnimal(herbivoreList[randomIndex], 1)[0]);
+                }
+                break;
+            // carnivores
+            case 2:
+                const carnivoreList = [Cat, Dog, Lion, Wolf];
+                for (let i = 0; i < numberOfEntities; i++) {
+                    const randomIndex = Math.floor(Math.random() * carnivoreList.length);
+                    spawnedEntities.push(spawnAnimal(carnivoreList[randomIndex], 1)[0]);
+                }
+                break;
+            default:
+                console.log("Something went wrong at spawning");
+        }
+    }
 
-    const allEntities = [
-        ...treeEntities,
-        ...bushEntities,
-        ...grassEntities,
-        ...rabbitEntities,
-        ...voleEntities,
-        ...wolfEntities,
-        ...lionEntities,
-        ...dogEntities,
-        ...elephantEntities,
-        ...catEntities,
-        ...deerEntities,
-        ...duckEntities,
-        ...flyEntites,
-        ...carrotEntities
-    ];
+
+    spawnRandom(30, 0) 
+    spawnRandom(10, 1)
+    spawnRandom(2, 2)
+    const allEntities = spawnedEntities
 
     console.log(`Total entities created: ${allEntities.length}`);
 
