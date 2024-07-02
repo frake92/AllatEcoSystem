@@ -4,6 +4,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const canvas = document.getElementById('ecosystemCanvas');
     const ctx = canvas.getContext('2d');
 
+    canvas.addEventListener('click', handleCanvasClick);
+
     function setupCanvas() {
         const devicePixelRatio = window.devicePixelRatio || 1;
         canvas.width = window.innerWidth;
@@ -393,6 +395,26 @@ document.addEventListener("DOMContentLoaded", function() {
                 entities.splice(i, 1);
             }
         }
+    }
+
+    function handleCanvasClick(event) {
+        const canvas = event.target;
+        const rect = canvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+
+        allAnimalList = [Deer, Duck, Elephant, Rabbit, Fly, Vole, Cat, Dog, Lion, Wolf]
+        randomSzam = Math.floor(Math.random() * allAnimalList.length);
+        ujAllat = new allAnimalList[randomSzam]
+        ujAllat.x = x
+        ujAllat.y = y
+        ujAllat.speedX = getRandomInt(1, 3);
+        ujAllat.speedY = getRandomInt(1, 3);
+        
+        allEntities.push(ujAllat)
+        entities.push(ujAllat)
+
+        console.log("New entity spawned at:", x, y);
     }
 
     function animate() {
