@@ -114,6 +114,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     if (this !== entity && isOverlap(this, entity)) {
                         if (this.food.includes(entity.name)) {
                             // Entity can be eaten
+                            logEvent(`${this.name} ate ${entity.name}`)
                             allEntities.splice(allEntities.indexOf(entity), 1);
                         }
                     }
