@@ -1,14 +1,3 @@
-import Cat from './Animals and Plants/Animals/Cat.js';
-import Deer from './Animals and Plants/Animals/Deer.js';
-import Dog from './Animals and Plants/Animals/Dog.js';
-import Duck from './Animals and Plants/Animals/Duck.js';
-import Elephant from './Animals and Plants/Animals/Elephant.js';
-import Fly from './Animals and Plants/Animals/Fly.js';
-import Lion from './Animals and Plants/Animals/Lion.js';
-import Rabbit from './Animals and Plants/Animals/Rabbit.js';
-import Voles from './Animals and Plants/Animals/Voles.js';
-import Wolf from './Animals and Plants/Animals/Wolf.js';
-
 document.addEventListener("DOMContentLoaded", function() {
     const canvas = document.getElementById('ecosystemCanvas');
     const ctx = canvas.getContext('2d');
